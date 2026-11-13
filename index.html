@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TraVenture – Camarines Norte Travel Guide</title>
+<link rel="stylesheet" href="style.css"></head><body>
+
+<section id="welcome" class="screen center">
+  <img src="images/logo.png" class="logo" alt="">
+  <h1>TraVenture</h1><p>Your Camarines Norte travel companion</p>
+  <input id="nameInput" placeholder="What's your name, traveller?" maxlength="30">
+  <button class="btn" id="enterBtn">Get Started</button>
+</section>
+
+<div id="app" hidden>
+  <header><span id="hello"></span>
+    <input id="search" type="search" placeholder="Any destination in mind?"></header>
+  <main>
+    <section id="home" class="tab">
+      <div id="chips" class="chips"></div><div id="cards"></div>
+    </section>
+
+    <section id="schedule" class="tab" hidden>
+      <h2>Trip Schedule</h2>
+      <form id="tripForm" class="form">
+        <select id="tripPlace" required></select>
+        <input type="date" id="tripDate" required>
+        <input id="tripNote" placeholder="Notes (optional)">
+        <button class="btn">Add Trip</button>
+      </form>
+      <div id="trips"></div>
+    </section>
+
+    <section id="map" class="tab" hidden>
+      <h2>Map</h2>
+      <iframe title="Map" loading="lazy"
+        src="https://www.openstreetmap.org/export/embed.html?bbox=122.3,13.9,123.1,14.5&layer=mapnik"></iframe>
+    </section>
+
+    <section id="hotlines" class="tab" hidden>
+      <h2>Emergency Hotlines</h2><div id="hotList"></div>
+    </section>
+
+    <section id="more" class="tab" hidden>
+      <h2>Memories</h2>
+      <form id="memForm" class="form">
+        <input id="memTitle" placeholder="Title" required>
+        <textarea id="memText" placeholder="Write your travel memory…" required></textarea>
+        <input type="file" id="memPhoto" accept="image/*">
+        <button class="btn">Save Memory</button>
+      </form>
+      <div id="memories"></div>
+      <h2>Achievements</h2><div id="ach"></div>
+      <h2>Profile</h2>
+      <div class="form"><input id="profName"><button class="btn" id="saveName">Update Name</button></div>
+    </section>
+  </main>
+
+  <nav id="nav">
+    <button data-tab="home" class="on">🏠<small>Home</small></button>
+    <button data-tab="schedule">🗓️<small>Schedule</small></button>
+    <button data-tab="map">🗺️<small>Map</small></button>
+    <button data-tab="hotlines">📞<small>Hotlines</small></button>
+    <button data-tab="more">⋯<small>More</small></button>
+  </nav>
+</div>
+
+<div id="modal" hidden><div class="sheet">
+  <button id="close">✕</button><img id="mImg" alt=""><h2 id="mName"></h2>
+  <p id="mLoc" class="muted"></p><div id="mInfo"></div>
+  <div class="row"><button class="btn" id="mTrip">Add to Schedule</button>
+  <a class="btn alt" id="mMap" target="_blank" rel="noopener">Open in Maps</a></div>
+</div></div>
+
+<script src="data.js"></script><script src="script.js"></script>
+</body></html>
