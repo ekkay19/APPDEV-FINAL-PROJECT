@@ -1,146 +1,51 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta char
+et="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Traventure — Explore Camarines Norte</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/traventure-logo.png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <section class="welcome-screen name-screen" id="nameScreen">
- <div class="welcome-brand-panel"><div class="brand-glow"></div><img src="assets/traventure-logo.png" alt="Traventure logo"></div>
- <div class="welcome-form-panel"><div class="welcome-form"><h1 aria-label="Hello"><span aria-hidden="true">H</span><span aria-hidden="true">e</span><span aria-hidden="true">l</span><span aria-hidden="true">l</span><span aria-hidden="true">o</span></h1><p>(What do you want us to call you?)</p><label class="name-input"><input id="nameEntry" type="text" maxlength="32" placeholder="Enter Your Name" autocomplete="given-name"></label><button class="enter-btn" id="nameEnter">Enter</button></div></div>
+    <div class="welcome-brand-panel">
+        <div class="brand-glow"></div>
+        <img src="assets/traventure-logo.png" alt="Traventure logo">
+    </div>
+    <div class="welcome-form-panel">
+        <div class="welcome-form">
+            <h1 aria-label="Hello">
+                <span aria-hidden="true">H</span>
+                <span aria-hidden="true">e</span>
+                <span aria-hidden="true">l</span>
+                <span aria-hidden="true">l</span>
+                <span aria-hidden="true">o</span>
+            </h1>
+            <p>(What do you want us to call you?)</p>
+            <label class="name-input">
+                <input id="nameEntry" type="text" maxlength="32" placeholder="Enter Your Name" autocomplete="given-name">
+            </label>
+            <button class="enter-btn" id="nameEnter">Enter</button>
+        </div>
+    </div>
 </section>
+
 <section class="welcome-screen landing-screen" id="landingScreen" hidden>
- <div class="landing-copy"><h1>Life is short and the<br>Camarines Norte is<br><em>wide</em></h1><p>To get the best of your adventure you just need to leave and<br>go where you like. We are waiting for you.</p><button class="get-started" id="getStarted">Get Started</button></div>
- <div class="landing-photo"><img src="assets/beach_calaguas.jpg" alt="A beautiful beach in Camarines Norte"></div>
+    <div class="landing-copy">
+        <h1>Life is short and the<br>Camarines Norte is<br><em>wide</em></h1>
+        <p>To get the best of your adventure you just need to leave and<br>go where you like. We are waiting for you.</p>
+        <a href="home.html" class="get-started" id="getStarted" >Get Started</a>
+    </div>
+    <div class="landing-photo">
+        <img src="assets/bagasbas.png" alt="A beautiful beach in Camarines Norte">
+    </div>
 </section>
-<div class="app-shell" id="appShell" hidden>
-<aside class="sidebar">
- <a class="brand" href="#" data-page="home"><span class="brand-mark">✦</span><span>traventure<small>YOUR LOCAL ESCAPE</small></span></a>
- <div class="side-label">DISCOVER</div>
- <nav>
-  <button class="nav-link active" data-page="home"><span>⌂</span> Home</button>
-  <button class="nav-link" data-page="explore"><span>⌕</span> Explore places</button>
-  <button class="nav-link" data-page="map"><span>⌖</span> Explore map</button>
-  <button class="nav-link" data-page="itinerary"><span>▤</span> My itinerary</button>
- </nav>
- <div class="side-label">YOUR TRAVEL SPACE</div>
- <nav>
-  <button class="nav-link" data-page="favorites"><span>♡</span> Favorite places <b id="favCount">0</b></button>
-  <button class="nav-link" data-page="memories"><span>▧</span> Memories</button>
-  <button class="nav-link" data-page="achievements"><span>✧</span> Achievements</button>
- </nav>
- <div class="sidebar-bottom">
-  <div class="help-card"><span class="help-icon">✦</span><strong>Make every trip count.</strong><p>Discover the places, stories, and experiences waiting for you.</p><button data-page="explore">Start exploring <span>↗</span></button></div>
-  <button class="profile-mini" data-page="profile"><img src="assets/avatar_profile.png"><span><strong>Traveler</strong><small>My profile</small></span><span class="dots">•••</span></button>
- </div>
-</aside>
-<main class="main">
- <header class="topbar"><a class="top-brand" href="#" data-page="home"><img src="assets/traventure-logo.png" alt=""><strong>Traventure</strong></a><nav class="top-nav"><button class="nav-link active" data-page="home">Home</button><button class="nav-link" data-page="itinerary">Schedule</button><button class="nav-link" data-page="map">Map</button><button class="nav-link" data-page="hotlines">Hotlines</button><button class="nav-link" id="moreTrigger" data-page="more" aria-haspopup="dialog" aria-expanded="false">More</button><button class="nav-link" id="returnWelcome" type="button" aria-label="Exit to welcome screen" title="Exit to welcome screen"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H5v18h8"/><path d="M10 12h11m-4-4 4 4-4 4"/></svg></button></nav></header>
- <section id="page-home" class="page active">
-  <div class="browse-heading"><h1>Hi, <span id="helloName">Traveler</span>!</h1><p>Discover beautiful places around Camarines Norte.</p></div>
-  <label class="home-place-search"><span aria-hidden="true">⌕</span><input id="homePlaceSearch" type="search" placeholder="Search places, towns, or experiences..." autocomplete="off"></label>
-  <p class="home-search-count" id="homeSearchCount" aria-live="polite" hidden></p>
-  <div class="category-strip" id="categoryStrip">
-   <button class="category-chip selected" data-category="All">All</button><button class="category-chip" data-category="Tourist Attractions">Tourist Attraction</button><button class="category-chip" data-category="Beaches">Beaches</button><button class="category-chip" data-category="Waterfalls">Water Falls</button><button class="category-chip" data-category="Rivers">Rivers</button><button class="category-chip" data-category="Mountains">Mountains</button><button class="category-chip" data-category="Churches">Churches</button><button class="category-chip" data-category="Resorts & Campsites">Resort/Camp Sites</button>
-  </div>
-  <div class="destination-grid" id="featuredGrid"></div>
-  <div class="wide-banner"><div><span class="eyebrow">PLAN IT YOUR WAY</span><h2>Your next great story<br>is one trip away.</h2><p>Save the places you love and build a trip that feels like you.</p><button class="light-btn" data-page="itinerary">Build my itinerary ↗</button></div><div class="banner-art">✦</div></div>
-  <div class="section-head compact"><div><div class="eyebrow muted">A LITTLE MORE TO EXPLORE</div><h2>Make the journey yours</h2></div></div>
-  <div class="feature-grid"><button class="feature-tile" data-page="favorites"><span>♡</span><b>Save your favorites</b><small>Keep your must-visit places close.</small><i>↗</i></button><button class="feature-tile" data-page="memories"><span>▧</span><b>Collect your memories</b><small>Keep the moments worth remembering.</small><i>↗</i></button><button class="feature-tile" data-page="achievements"><span>✧</span><b>Earn achievements</b><small>Celebrate every step of your journey.</small><i>↗</i></button></div>
-  <footer>© 2026 Traventure <span>Made for curious travelers · Camarines Norte, Philippines</span></footer>
- </section>
- <section id="page-explore" class="page">
-  <div class="page-intro"><div class="eyebrow muted">THE PROVINCE IS YOURS TO EXPLORE</div><h1>Discover <em>somewhere new.</em></h1><p>Browse local attractions, beaches, nature spots, and places to stay.</p></div>
-  <div class="explore-tools"><label class="search-box"><span>⌕</span><input id="searchInput" placeholder="Search destinations, towns, or experiences..."><kbd>⌘ K</kbd></label><select id="categoryFilter"><option>All categories</option><option>Tourist Attractions</option><option>Beaches</option><option>Waterfalls</option><option>Rivers</option><option>Mountains</option><option>Churches</option><option>Resorts & Campsites</option></select></div>
-  <div class="results-line"><span id="resultCount">35 destinations</span><span>Showing destinations in Camarines Norte</span></div><div class="destination-grid all-grid" id="allGrid"></div>
-  <footer>© 2026 Traventure <span>Discover Camarines Norte</span></footer>
- </section>
- <section id="page-map" class="page">
-  <div class="page-intro"><div class="eyebrow muted">FIND YOUR WAY AROUND</div><h1>Explore the <em>map.</em></h1><p>Get a wider view of Camarines Norte and plan where to head next.</p></div>
-  <div class="map-layout"><div class="map-frame"><iframe title="Map of Camarines Norte" src="https://www.openstreetmap.org/export/embed.html?bbox=122.55%2C13.85%2C123.25%2C14.55&layer=mapnik&marker=14.1369%2C122.9813"></iframe></div><div class="map-side"><span class="eyebrow muted">START EXPLORING</span><h2>Places to pin on your map</h2><p>Choose a destination to view its details and save it to your trip.</p><div id="mapPlaces"></div><a class="map-link" target="_blank" href="https://www.openstreetmap.org/?mlat=14.1369&mlon=122.9813#map=10/14.1369/122.9813">Open full map ↗</a></div></div>
-  <footer>© 2026 Traventure <span>Map data © OpenStreetMap contributors</span></footer>
- </section>
- <section id="page-hotlines" class="page">
-  <div class="hotlines-page">
-   <header class="hotlines-heading"><div class="eyebrow">CAMARINES NORTE · EMERGENCY DIRECTORY</div><h1>Emergency Hotlines</h1><p>Find emergency contact numbers by municipality.</p></header>
-   <label class="hotlines-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16 16 4 4"></path></svg><input id="hotlineSearch" type="search" placeholder="Search municipality or hotline" autocomplete="off"></label>
-   <div id="hotlineList" class="hotline-list" aria-live="polite"></div>
-  </div>
-  <footer>© 2026 Traventure <span>For emergencies, contact local authorities. · <a href="https://camsnorte.com/emergency-hotlines/" target="_blank" rel="noopener noreferrer">Camarines Norte Emergency Hotlines</a></span></footer>
- </section>
- <section id="page-itinerary" class="page"><div class="page-intro"><div class="eyebrow muted">MAKE THE MOST OF YOUR TIME</div><h1>Your travel <em>itinerary.</em></h1><p>Bring your chosen destinations together in one simple trip plan.</p></div><div class="itinerary-layout"><div class="itinerary-main"><div class="itinerary-top"><div><h2>My trip plan</h2><p id="tripCount">No destinations added yet</p></div><button class="outline-btn" data-page="explore">＋ Add places</button></div><div id="tripList" class="trip-list"></div><div id="tripEmpty" class="empty-state"><span>▤</span><h3>Your trip starts here</h3><p>Browse destinations and add the places you want to visit.</p><button class="primary-btn" data-page="explore">Find destinations ↗</button></div></div><aside class="trip-tip"><span>✦</span><h3>A little planning goes a long way.</h3><p>Save places first, then arrange your route based on the towns you want to explore.</p></aside></div><footer>© 2026 Traventure</footer></section>
- <section id="page-favorites" class="page"><div class="page-intro"><div class="eyebrow muted">YOUR PERSONAL SHORTLIST</div><h1>Places you <em>love.</em></h1><p>Your saved destinations, all in one place.</p></div><div class="explore-tools favorite-tools"><label class="search-box">⌕ <input id="favoriteSearch" type="search" placeholder="Search favorite places, towns, or categories..." aria-label="Search favorite places"></label></div><p class="favorite-search-count" id="favoriteSearchCount" hidden></p><div class="destination-grid all-grid" id="favoriteGrid"></div><div id="favoriteEmpty" class="empty-state"><span>♡</span><h3>No favorites just yet</h3><p>Tap the heart on any destination to keep it here.</p><button class="primary-btn" data-page="explore">Explore places ↗</button></div><footer>© 2026 Traventure</footer></section>
- <section id="page-memories" class="page">
-  <div id="memoryEditorView" class="memory-editor-view">
-   <div class="page-intro"><div class="eyebrow muted">YOUR JOURNEY, YOUR STORIES</div><h1>Keep the <em>memories.</em></h1><p>Save a little note about the places and moments you never want to forget.</p></div>
-   <div class="memory-layout">
-    <section class="memory-calendar-card">
-     <div class="memory-panel-heading"><h2>Choose a date</h2><p>Select when the memory happened.</p></div>
-     <div class="memory-calendar" aria-label="Choose a date for your memory">
-      <div class="memory-calendar-selectors">
-       <label><select id="memoryMonth" aria-label="Month"></select><span aria-hidden="true">⌄</span></label>
-       <label><select id="memoryYear" aria-label="Year"></select><span aria-hidden="true">⌄</span></label>
-      </div>
-      <div class="memory-weekdays" aria-hidden="true"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
-      <div class="memory-calendar-days" id="memoryCalendarDays"></div>
-     </div>
-    </section>
-    <form class="memory-form" id="memoryForm">
-     <div class="memory-panel-heading"><h2>Add a travel memory</h2><p>Capture the details you want to remember.</p></div>
-     <label class="memory-field-label" for="memoryTitle">Entry title</label>
-     <input class="memory-title-input" id="memoryTitle" type="text" maxlength="80" placeholder="e.g. A day at Calaguas">
-     <label class="memory-field-label" for="memoryPhotoInput">Photo</label>
-     <label class="memory-photo-upload" for="memoryPhotoInput" aria-label="Choose a photo for this memory">
-      <input id="memoryPhotoInput" type="file" accept="image/*" hidden>
-      <span class="memory-photo-placeholder" id="memoryPhotoPlaceholder" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M5 13h14l4 5h20v22H5z"></path><path d="M24 24v11m-5.5-5.5h11"></path></svg><span>Add a photo or browse files</span></span>
-      <img id="memoryPhotoPreview" alt="Selected memory photo" hidden>
-     </label>
-     <label class="memory-field-label" for="memoryText">How was your experience?</label>
-     <textarea id="memoryText" placeholder="Write a note about your trip or experience..."></textarea>
-     <div class="memory-save-row"><button class="primary-btn" id="saveMemory" type="submit">Save memory <span>↗</span></button></div>
-    </form>
-   </div>
-   <section class="memory-saved-section" id="memorySavedSection" hidden>
-    <h2 class="memory-list-title">Saved memories</h2>
-    <div class="memory-list" id="memorySavedList"></div>
-   </section>
-  </div>
-  <footer>© 2026 Traventure</footer>
- </section>
- <section id="page-achievements" class="page">
-  <div class="achievement-page">
-   <header class="achievement-header">
-    <h1>Achievements &amp; Rewards</h1>
-   </header>
-   <div class="achievement-list" id="badgeGrid" aria-live="polite"></div>
-  </div>
-  <footer>© 2026 Traventure</footer>
- </section>
- <section id="page-profile" class="page"><div class="page-intro"><div class="eyebrow muted">YOUR TRAVEL IDENTITY</div><h1>Traveler <em>profile.</em></h1><p>Make this travel space your own.</p></div><div class="profile-card"><img src="assets/avatar_profile.png"><div><span class="eyebrow muted">TRAVELER</span><h2 id="profileName">Traveler</h2><p>Curious explorer · Camarines Norte</p><button class="outline-btn" id="editName">Edit display name</button></div></div><div class="profile-preferences"><h3>Your travel space</h3><p>Keep track of your saved places, memories, and trip ideas from one place.</p><div><span>Favorite places</span><b id="profileFav">0</b></div><div><span>Travel memories</span><b id="profileMem">0</b></div><div><span>Itinerary stops</span><b id="profileTrip">0</b></div></div><footer>© 2026 Traventure</footer></section>
-</main>
-</div>
-<div class="more-backdrop" id="moreModal" hidden>
- <section class="more-panel" role="dialog" aria-modal="true" aria-labelledby="moreTitle">
-  <img class="more-decoration" src="assets/pinwheel.gif" alt="" aria-hidden="true">
-  <button class="more-close" id="closeMore" type="button" aria-label="Close More menu">×</button>
-  <h2 id="moreTitle">More...</h2>
-  <button class="more-item" data-page="favorites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h12v17l-6-4-6 4z"></path></svg><span>Favorite places</span></button>
-  <button class="more-item" data-page="memories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5h14v17H5z"></path><path d="M9 8h6M9 12h8M9 16h8"></path></svg><span>Memories</span></button>
-  <button class="more-item" data-page="achievements"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h10v5a5 5 0 0 1-10 0zM7 6H4v2a4 4 0 0 0 4 4m9-6h3v2a4 4 0 0 1-4 4M12 13.5v4m-4 3h8m-6-3h4"></path></svg><span>Achievements &amp; Rewards</span></button>
-  <div class="more-themes">
-   <div class="more-item theme-heading"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 0 0 17h1.2a2 2 0 0 0 1.5-3.3 1.5 1.5 0 0 1 1.2-2.5H18a2.5 2.5 0 0 0 2.5-2.5A8.5 8.5 0 0 0 12 3.5z"></path><path d="M7.5 10h.1m3-3h.1m4 1h.1m-8 7h.1"></path></svg><span>Themes</span></div>
-   <div class="theme-options" role="group" aria-label="Choose a theme">
-    <button class="theme-choice" type="button" data-theme-choice="blue" aria-pressed="false"><span class="theme-swatch blue-swatch"></span>Blue</button>
-    <button class="theme-choice" type="button" data-theme-choice="violet" aria-pressed="true"><span class="theme-swatch violet-swatch"></span>Violet</button>
-    <button class="theme-choice" type="button" data-theme-choice="black" aria-pressed="false"><span class="theme-swatch black-swatch"></span>Black</button>
-   </div>
-  </div>
- </section>
-</div>
-<div class="modal-backdrop" id="detailModal"><div class="detail-modal"><button class="modal-close" id="closeModal">×</button><img id="modalImage" src=""><div class="modal-content"><span class="eyebrow muted" id="modalCategory"></span><h2 id="modalTitle"></h2><p class="modal-place" id="modalPlace"></p><p id="modalDescription"></p><div class="modal-actions"><button class="primary-btn" id="modalAdd">＋ Add to itinerary</button><button class="outline-btn" id="modalFav">♡ Save place</button></div></div></div></div>
-<div class="toast" id="toast"></div>
-<script>window.DESTINATIONS = [{"name": "Rizal Monument", "place": "Daet, Camarines Norte", "category": "Tourist Attractions", "image": "tourist_monument.png", "description": "A historic landmark in Rizal Park, Daet, known as the first monument dedicated to José Rizal."}, {"name": "Mercedes Group of Islands", "place": "Mercedes, Camarines Norte", "category": "Tourist Attractions", "image": "tourist_mercedesgoi.png", "description": "Explore island scenery, sandbars, snorkeling spots, and coastal communities."}, {"name": "Calaguas Island", "place": "Mangcawayan, Vinzons", "category": "Beaches", "image": "beach_calaguas.jpg", "description": "A remote island escape famous for powdery white sand, clear turquoise water, beach camping, and island hopping."}, {"name": "Bagasbas Beach", "place": "Daet, Camarines Norte", "category": "Beaches", "image": "beach_bagasbas.png", "description": "A beginner-friendly surfing destination with a long shoreline, rolling waves, and a lively boardwalk."}, {"name": "Gumaus Beach", "place": "Paracale, Camarines Norte", "category": "Beaches", "image": "beach_gumaus.png", "description": "A peaceful mainland beach with fine sand, turquoise water, and an easy-going atmosphere."}, {"name": "Parola Island", "place": "Jose Panganiban, Camarines Norte", "category": "Beaches", "image": "beach_parola.png", "description": "A quiet island known for its lighthouse, clear water, and pinkish shoreline."}, {"name": "Pulang Daga", "place": "Paracale, Camarines Norte", "category": "Beaches", "image": "beach_pulangdaga.png", "description": "A scenic coastline with golden-reddish sand, calm swimming areas, and cliffside viewpoints."}, {"name": "Labnig Beach", "place": "Paracale, Camarines Norte", "category": "Beaches", "image": "beach_labnig.jpg", "description": "A laid-back beachfront hideaway with native cottages and a relaxed local atmosphere."}, {"name": "Taba-taba Beach", "place": "Basud, Camarines Norte", "category": "Beaches", "image": "beach_tabataba.png", "description": "A calm coastal escape with scenic palms, gentle waves, and space to unwind."}, {"name": "San Jose Beach", "place": "Talisay, Camarines Norte", "category": "Beaches", "image": "beach_sanjose.png", "description": "A long Pacific-facing shoreline along the President Cory C. Aquino Boulevard."}, {"name": "Mananap Falls", "place": "San Vicente, Camarines Norte", "category": "Waterfalls", "image": "falls_mananap.png", "description": "A forest waterfall with a natural swimming basin and an adventurous jungle trek."}, {"name": "Malatap Falls", "place": "Labo, Camarines Norte", "category": "Waterfalls", "image": "falls_malatap.png", "description": "A low, wide cascade with a shallow natural pool and picnic-friendly surroundings."}, {"name": "Maligaya Falls", "place": "Brgy. Submakin, Labo, Camarines Norte", "category": "Waterfalls", "image": "falls_maligaya.png", "description": "A refreshing nature destination tucked into the green landscape of Labo."}, {"name": "Binuang Falls", "place": "Brgy. Daguit, Labo, Camarines Norte", "category": "Waterfalls", "image": "falls_binuang.png", "description": "A scenic waterfall surrounded by the natural beauty of Labo."}, {"name": "Colasi Falls", "place": "Mercedes, Camarines Norte", "category": "Waterfalls", "image": "falls_colasi.png", "description": "A nature spot in Mercedes for visitors looking to explore beyond the coast."}, {"name": "Nacali Falls", "place": "Brgy. Matacong, San Lorenzo Ruiz", "category": "Waterfalls", "image": "falls_nacali.png", "description": "A quiet waterfall destination surrounded by lush greenery."}, {"name": "Tariris Falls", "place": "Paracale, Camarines Norte", "category": "Waterfalls", "image": "falls_tariris.png", "description": "A tucked-away natural attraction in Paracale."}, {"name": "Mampurog River", "place": "San Lorenzo Ruiz, Camarines Norte", "category": "Rivers", "image": "river_mampurog.png", "description": "A scenic river destination for a relaxing nature stop."}, {"name": "Malaguit River", "place": "Paracale, Camarines Norte", "category": "Rivers", "image": "river_malaguit.webp", "description": "A riverside destination in Paracale."}, {"name": "Talisay River", "place": "Talisay, Camarines Norte", "category": "Rivers", "image": "river_talisay.png", "description": "A calm river landscape in Talisay."}, {"name": "Mount Labo", "place": "Labo, Camarines Norte", "category": "Mountains", "image": "mount_labo.png", "description": "A mountain destination for outdoor exploration and scenic views."}, {"name": "Colasi Peak", "place": "Mercedes, Camarines Norte", "category": "Mountains", "image": "mount_colasi.jpg", "description": "A highland destination in Mercedes with rewarding natural scenery."}, {"name": "Mt. Bagacay / Tulis Peak", "place": "Labo, Camarines Norte", "category": "Mountains", "image": "mount_bagacay.jpg", "description": "A mountain escape in Labo for nature and trekking enthusiasts."}, {"name": "Mount Cadig", "place": "Labo, Camarines Norte", "category": "Mountains", "image": "mount_cadig.jpg", "description": "A green mountain destination in the municipality of Labo."}, {"name": "St. Francis of Assisi Parish Church", "place": "Talisay, Camarines Norte", "category": "Churches", "image": "church_saintfrancis.jpg", "description": "A heritage and faith destination in Talisay."}, {"name": "St. John the Baptist Church", "place": "Daet, Camarines Norte", "category": "Churches", "image": "church_saintjohn.jpg", "description": "A historic church destination in the capital town of Daet."}, {"name": "Diocesan Shrine of Jesus the Black Nazarene", "place": "Capalonga, Camarines Norte", "category": "Churches", "image": "church_diocesan.jpg", "description": "A religious destination in Capalonga."}, {"name": "Paroquia de Nuestra Señora de Candelaria", "place": "Paracale, Camarines Norte", "category": "Churches", "image": "church_denuestra.jpg", "description": "A heritage church destination in Paracale."}, {"name": "Diocesan Shrine of St. Vincent Ferrer", "place": "San Vicente, Camarines Norte", "category": "Churches", "image": "church_saintferrer.jpg", "description": "A parish and shrine destination in San Vicente."}, {"name": "Gumaos Bay", "place": "Brgy. Gumaus, San Vicente, Camarines Norte", "category": "Resorts & Campsites", "image": "resort_gumaus.jpg", "description": "A coastal stay option for visitors exploring the area."}, {"name": "Adelaida Native Farm", "place": "San Lorenzo Ruiz, Camarines Norte", "category": "Resorts & Campsites", "image": "resort_adelaida.jpg", "description": "A nature-focused place to slow down and enjoy a rural setting."}, {"name": "Pambuhan Glamping Resort", "place": "Mercedes, Camarines Norte", "category": "Resorts & Campsites", "image": "resort_pambuhan.jpg", "description": "A glamping stay option in Mercedes."}, {"name": "Althea's Dreamland Resort", "place": "Brgy. Mampurog, San Lorenzo Ruiz", "category": "Resorts & Campsites", "image": "resort_altheas.jpg", "description": "A resort destination surrounded by the landscape of San Lorenzo Ruiz."}, {"name": "Carmelita's Cove", "place": "Mangcamagong, Basud, Camarines Norte", "category": "Resorts & Campsites", "image": "resort_carmelitas.jpg", "description": "A coastal resort destination in Basud."}, {"name": "Athena Nature Park & Resort", "place": "Dagutdutan, San Lorenzo Ruiz", "category": "Resorts & Campsites", "image": "resort_athenas.jpg", "description": "A nature park and resort for a refreshing countryside break."}];</script><script src="app.js"></script>
-</body></html>
+
+<script src="app.js"></script>
+</body>
+</html>
+
