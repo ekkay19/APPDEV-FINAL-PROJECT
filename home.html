@@ -50,6 +50,10 @@
             <a href="map.html" class="nav-link" data-page="map">Map</a>
             <a href="hotlines.html" class="nav-link" data-page="hotlines">Hotlines</a>
             <button class="nav-link" id="moreTrigger" data-page="more" aria-haspopup="dialog" aria-expanded="false">More</button>
+            <a class="notification-icon-button" href="notifications.html" aria-label="View notifications" title="Notifications">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
+                <span class="notification-count" aria-live="polite" hidden></span>
+            </a>
             <a href="profile.html" class="nav-link" aria-label="Visit Profile" title="User Profile">
                 <img src="assets/avatar_profile.png" alt="User profile">
             </a>
@@ -61,10 +65,19 @@
             <h1>Hi, <span id="helloName">Traveler</span>!</h1>
             <p>Discover beautiful places around Camarines Norte.</p>
         </div>
-        <label class="home-place-search">
-            <span aria-hidden="true">⌕</span>
-            <input id="homePlaceSearch" type="search" placeholder="Search places, towns, or experiences..." autocomplete="off">
-        </label>
+        <div class="home-search-row">
+            <label class="home-place-search">
+                <span aria-hidden="true">⌕</span>
+                <input id="homePlaceSearch" type="search" placeholder="Search places, towns, or experiences..." autocomplete="off">
+            </label>
+            <a class="home-filter-button" href="#categoryStrip" aria-label="Jump to category filters" title="Filter by category">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 7h9m4 0h3M4 17h3m4 0h9"></path>
+                    <circle cx="15" cy="7" r="2"></circle>
+                    <circle cx="9" cy="17" r="2"></circle>
+                </svg>
+            </a>
+        </div>
         <p class="home-search-count" id="homeSearchCount" aria-live="polite" hidden></p>
         <div class="category-strip" id="categoryStrip">
             <button class="category-chip selected" data-category="All">All</button>
@@ -298,9 +311,16 @@
             <h2 id="modalTitle"></h2>
             <p class="modal-place" id="modalPlace"></p>
             <p id="modalDescription"></p>
+            <div class="modal-route" id="modalRoute">
+                <div class="modal-route-icon" aria-hidden="true">⌖</div>
+                <div>
+                    <strong id="modalDistance">Getting distance...</strong>
+                    <span id="modalRouteText">Directions to this destination</span>
+                </div>
+            </div>
             <div class="modal-actions">
                 <button class="primary-btn" id="modalAdd">＋ Add to itinerary</button>
-                <button class="outline-btn" id="modalFav">♡ Save place</button>
+                <a class="map-btn" id="modalMap" href="https://www.google.com/maps" target="_blank" rel="noopener">View on Map ↗</a>
             </div>
         </div>
     </div>
