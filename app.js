@@ -23,9 +23,15 @@ function updateAvatar() {
 const places = window.DESTINATIONS || new Array();
 let favorites = JSON.parse(localStorage.getItem('tv-favorites') || '[]');
 let itinerary = JSON.parse(localStorage.getItem('tv-itinerary') || '[]');
+itinerary = itinerary.map(entry => typeof entry === 'string' ? { name: entry, date: '', notes: '' } : entry)
+    .filter(entry => entry && typeof entry.name === 'string');
 let memories = JSON.parse(localStorage.getItem('tv-memories') || '[]');
 let traveler = localStorage.getItem('tv-name') || 'Traveler', currentPlace = null, currentPage = 'home', homeCategory = 'All';
 let memoryDate = new Date(), memoryPhoto = '';
+let generatedItinerary = [];
+let readNotificationKeys = JSON.parse(localStorage.getItem('tv-notifications-read') || '[]');
+if (!Array.isArray(readNotificationKeys)) readNotificationKeys = [];
+readNotificationKeys = readNotificationKeys.filter(key => typeof key === 'string');
 
 const save = () => {
     localStorage.setItem('tv-favorites', JSON.stringify(favorites));
@@ -111,6 +117,20 @@ function renderGrid(el, list) {
 function updateCounts() {
     if ($('#favCount')) $('#favCount').textContent = favorites.length;
     if ($('#tripCount')) $('#tripCount').textContent = itinerary.length ? (itinerary.length + ' destination' + (itinerary.length === 1 ? '' : 's') + ' in your plan') : 'No destinations added yet';
+    const upcomingPlans = getUpcomingPlanGroups();
+    const currentNotificationKeys = new Set(upcomingPlans.map(plan => plan.key));
+    const retainedReadKeys = readNotificationKeys.filter(key => currentNotificationKeys.has(key));
+    if (retainedReadKeys.length !== readNotificationKeys.length) {
+        readNotificationKeys = retainedReadKeys;
+        localStorage.setItem('tv-notifications-read', JSON.stringify(readNotificationKeys));
+    }
+    const unreadCount = upcomingPlans.filter(plan => !readNotificationKeys.includes(plan.key)).length;
+    const notificationBadge = $('.notification-count');
+    if (notificationBadge) {
+        notificationBadge.textContent = unreadCount > 99 ? '99+' : String(unreadCount);
+        notificationBadge.hidden = unreadCount === 0;
+        notificationBadge.setAttribute('aria-label', unreadCount + ' unread plan notification' + (unreadCount === 1 ? '' : 's'));
+    }
     if ($('#profileFav')) $('#profileFav').textContent = favorites.length;
     if ($('#profileMem')) $('#profileMem').textContent = memories.length;
     if ($('#profileTrip')) $('#profileTrip').textContent = itinerary.length;
@@ -163,10 +183,167 @@ function renderFavorites() {
 
 function renderTrip() {
     if (!$('#tripList')) return;
-    let list = itinerary.map(n => places.find(p => p.name === n)).filter(Boolean);
-    $('#tripList').innerHTML = list.map((p, i) => '<div class="trip-row"><img src="assets/' + p.image + '"><div><b>' + safe((i + 1) + '. ' + p.name) + '</b><small>' + safe(p.place) + '</small></div><button data-remove-trip="' + safe(p.name) + '" title="Remove">×</button></div>').join('');
+    let list = itinerary.map(entry => ({ entry, place: places.find(p => p.name === entry.name) })).filter(item => item.place);
+    $('#tripList').innerHTML = list.map((item, i) => {
+        const p = item.place, entry = item.entry;
+        return '<article class="trip-row"><img src="assets/' + safe(p.image) + '" alt="' + safe(p.name) + '"><div class="trip-row-details"><b>' + safe((i + 1) + '. ' + p.name) + '</b><small>' + safe(p.place) + '</small><label>Visit date<input type="date" data-trip-date="' + safe(p.name) + '" value="' + safe(entry.date || '') + '"></label><label>Notes<textarea data-trip-notes="' + safe(p.name) + '" maxlength="500" rows="2" placeholder="Add a note or activity...">' + safe(entry.notes || '') + '</textarea></label></div><button type="button" data-remove-trip="' + safe(p.name) + '" aria-label="Remove ' + safe(p.name) + ' from itinerary" title="Remove">×</button></article>';
+    }).join('');
     if ($('#tripEmpty')) $('#tripEmpty').style.display = list.length ? 'none' : 'block';
     $('#tripList').style.display = list.length ? 'block' : 'none';
+    renderTripDestinationOptions();
+}
+
+function localDateKey(date) {
+    return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+}
+
+function formatTripDate(value) {
+    const parts = value.split('-').map(Number);
+    return new Date(parts[0], parts[1] - 1, parts[2]).toLocaleDateString(undefined, {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+}
+
+function getUpcomingPlanGroups() {
+    const today = localDateKey(new Date());
+    const upcoming = itinerary.filter(entry => /^\d{4}-\d{2}-\d{2}$/.test(entry.date || '') && entry.date >= today)
+        .sort((a, b) => a.date.localeCompare(b.date));
+    const grouped = upcoming.reduce((days, entry) => {
+        (days[entry.date] || (days[entry.date] = [])).push(entry);
+        return days;
+    }, {});
+    return Object.keys(grouped).map(date => ({
+        date,
+        entries: grouped[date],
+        key: JSON.stringify([date, grouped[date].map(entry => entry.name).sort()])
+    }));
+}
+
+function renderTripDestinationOptions() {
+    const select = $('#tripDestinationSelect');
+    if (!select) return;
+    const currentValue = select.value;
+    const available = places.filter(place => !itinerary.some(entry => entry.name === place.name));
+    select.innerHTML = '<option value="">Choose a place</option>' + available.map(place =>
+        '<option value="' + safe(place.name) + '">' + safe(place.name + ' · ' + place.place) + '</option>'
+    ).join('');
+    if (available.some(place => place.name === currentValue)) select.value = currentValue;
+}
+
+function renderUpcomingPlans() {
+    const list = $('#upcomingPlans');
+    const empty = $('#upcomingPlansEmpty');
+    const upcomingPlans = getUpcomingPlanGroups();
+    if (list) {
+        list.innerHTML = upcomingPlans.map(plan => {
+            const stops = plan.entries.map(entry => {
+                const place = places.find(item => item.name === entry.name);
+                return '<li><strong>' + safe(entry.name) + '</strong>' +
+                    (place ? '<span>' + safe(place.place) + '</span>' : '') +
+                    (entry.notes ? '<p>' + safe(entry.notes) + '</p>' : '') + '</li>';
+            }).join('');
+            return '<article class="upcoming-plan-card"><div class="upcoming-plan-date">' +
+                '<span>UPCOMING PLAN</span><h2>' + safe(formatTripDate(plan.date)) + '</h2></div><ul>' + stops + '</ul></article>';
+        }).join('');
+    }
+    if (empty) empty.hidden = upcomingPlans.length > 0;
+    if (list && upcomingPlans.length) {
+        readNotificationKeys = Array.from(new Set(readNotificationKeys.concat(upcomingPlans.map(plan => plan.key))));
+        localStorage.setItem('tv-notifications-read', JSON.stringify(readNotificationKeys));
+        updateCounts();
+    }
+}
+
+function renderTripPrep() {
+    const container = $('#tripPrepList');
+    if (!container) return;
+    const categories = new Set(itinerary.map(entry => {
+        const place = places.find(item => item.name === entry.name);
+        return place ? place.category : '';
+    }));
+    const gear = [
+        { categories: ['Beaches'], items: ['reef-safe sunscreen', 'waterproof dry bag', 'swimwear'] },
+        { categories: ['Waterfalls', 'Mountains'], items: ['hiking shoes', 'lightweight daypack', 'first aid kit'] },
+        { categories: ['Resorts & Campsites'], items: ['camping gear', 'insect repellent'] },
+        { categories: ['Rivers'], items: ['water shoes', 'quick-dry towel'] },
+        { categories: ['Tourist Attractions', 'Churches'], items: ['comfortable walking shoes', 'reusable water bottle'] }
+    ].filter(group => group.categories.some(category => categories.has(category)))
+        .flatMap(group => group.items);
+    const recommendations = Array.from(new Set(gear));
+    container.innerHTML = recommendations.length
+        ? recommendations.map(item => '<a href="https://www.google.com/search?tbm=shop&amp;q=' + encodeURIComponent(item) + '" target="_blank" rel="noopener noreferrer">' + safe(item) + '<span aria-hidden="true"> ↗</span></a>').join('')
+        : '<p>Add destinations to see relevant gear ideas.</p>';
+}
+
+function renderTripBudget() {
+    const result = $('#tripBudgetResult');
+    if (!result) return;
+    const amount = id => Math.max(0, Number($('#' + id).value) || 0);
+    const travelers = Math.max(1, amount('budgetTravelers'));
+    const nights = amount('budgetNights');
+    const transport = amount('budgetTransport') * travelers;
+    const lodging = amount('budgetLodging') * nights;
+    const meals = amount('budgetMeals') * (nights + 1) * travelers;
+    const activities = amount('budgetActivities') * travelers;
+    const currency = value => new Intl.NumberFormat('en-PH', {
+        style: 'currency', currency: 'PHP', maximumFractionDigits: 0
+    }).format(value);
+    result.innerHTML = '<strong>Estimated total: ' + currency(transport + lodging + meals + activities) + '</strong>' +
+        '<span>Transport ' + currency(transport) + ' · Lodging ' + currency(lodging) +
+        ' · Meals ' + currency(meals) + ' · Activities ' + currency(activities) + '</span>';
+}
+
+function addTripPlace(name, date = '', notes = '') {
+    if (itinerary.some(entry => entry.name === name)) return false;
+    itinerary.push({ name, date, notes });
+    return true;
+}
+
+function generateTripItinerary() {
+    const startDate = $('#tripStartDate').value;
+    const days = Number($('#tripDays').value);
+    const interests = $$('input[name="tripInterest"]:checked').map(input => input.value);
+    if (!startDate || !days || !interests.length) {
+        toast('Choose a start date, trip length, and at least one interest');
+        return;
+    }
+
+    const options = interests.map(category => ({
+        category,
+        places: places.filter(place => place.category === category && !itinerary.some(entry => entry.name === place.name))
+            .sort((a, b) => a.place.localeCompare(b.place))
+    }));
+    const selected = [];
+    while (selected.length < Math.min(days * 2, 20) && options.some(option => option.places.length)) {
+        options.forEach(option => {
+            if (selected.length < Math.min(days * 2, 20) && option.places.length) {
+                selected.push(option.places.shift());
+            }
+        });
+    }
+    generatedItinerary = selected.map((place, index) => {
+        const date = new Date(startDate + 'T12:00:00');
+        date.setDate(date.getDate() + Math.floor(index / 2));
+        return {
+            name: place.name,
+            date: localDateKey(date),
+            notes: 'Suggested place based on your interest in ' + place.category.toLowerCase() + '. Confirm local hours, fees, and travel conditions.'
+        };
+    });
+
+    const results = $('#tripBuilderResults');
+    if (!generatedItinerary.length) {
+        results.innerHTML = '<p>All matching destinations are already in your trip plan. Try another interest.</p>';
+        results.hidden = false;
+        return;
+    }
+    results.innerHTML = '<h3>Your suggested route</h3><label class="generated-select-all"><input id="generatedSelectAll" type="checkbox" checked> Select all ' +
+        generatedItinerary.length + ' places</label><ol>' + generatedItinerary.map((entry, index) =>
+        '<li><label class="generated-route-stop"><input type="checkbox" name="generatedStop" value="' + index + '" checked><span>' +
+        '<span>Day ' + (Math.floor(index / 2) + 1) + ' · ' + safe(formatTripDate(entry.date)) + '</span><strong>' +
+        safe(entry.name) + '</strong></span></label></li>'
+    ).join('') + '</ol><button type="button" class="primary-btn" data-apply-generated>Add selected places to my plan</button>';
+    results.hidden = false;
 }
 
 function memoryDateKey(date) {
@@ -225,7 +402,7 @@ if ($('#memorySavedSection')) $('#memorySavedSection').hidden = !memories.length
 }
 function renderBadges() {
 if (!$('#badgeGrid')) return;
-const planned = itinerary.map(name => places.find(place => place.name === name)).filter(Boolean);
+const planned = itinerary.map(entry => places.find(place => place.name === entry.name)).filter(Boolean);
 const milestones = [
 { name: 'Welcome traveller', description: 'Explore the app', image: 'compass.png', unlocked: Boolean(localStorage.getItem('tv-name')) },
 { name: 'First day as a traveller', description: 'Add one tourist attraction to your itinerary', image: 'achievements.png', unlocked: planned.some(place => place.category === 'Tourist Attractions') },
@@ -244,6 +421,9 @@ renderTrip();
 renderMemories();
 renderBadges();
 renderAll();
+renderTripPrep();
+renderUpcomingPlans();
+renderTripBudget();
 }
 function openMore() {
 const modal = $('#moreModal');
@@ -398,6 +578,87 @@ favorites = favorites.includes(name) ? favorites.filter(n => n !== name) : [...f
 refresh();
 toast(favorites.includes(name) ? 'Added to your favorites' : 'Removed from favorites');
 }
+
+const destinationCoordinates = {
+    'Rizal Monument': [14.1128, 122.9564],
+    'Mercedes Group of Islands': [14.1064, 123.0120],
+    'Calaguas Island': [14.1354, 122.9050],
+    'Bagasbas Beach': [14.1128, 122.9564],
+    'Gumaus Beach': [14.2796, 122.7880],
+    'Parola Island': [14.2900, 122.6920],
+    'Pulang Daga': [14.2796, 122.7880],
+    'Labnig Beach': [14.2796, 122.7880],
+    'Taba-taba Beach': [14.0506, 122.9600],
+    'San Jose Beach': [14.1337, 122.9220],
+    'Mananap Falls': [14.0980, 122.8990],
+    'Malatap Falls': [14.0290, 122.8260],
+    'Maligaya Falls': [14.0290, 122.8260],
+    'Binuang Falls': [14.0290, 122.8260],
+    'Colasi Falls': [14.1064, 123.0120],
+    'Nacali Falls': [14.0010, 122.9300],
+    'Tariris Falls': [14.2796, 122.7880],
+    'Mampurog River': [14.0010, 122.9300],
+    'Malaguit River': [14.2796, 122.7880],
+    'Talisay River': [14.1337, 122.9220],
+    'Mount Labo': [14.0290, 122.8260],
+    'Colasi Peak': [14.1064, 123.0120],
+    'Mt. Bagacay / Tulis Peak': [14.0290, 122.8260],
+    'Mount Cadig': [14.0290, 122.8260],
+    'St. Francis of Assisi Parish Church': [14.1337, 122.9220],
+    'St. John the Baptist Church': [14.1128, 122.9564],
+    'Diocesan Shrine of Jesus the Black Nazarene': [14.3290, 122.4880],
+    'Paroquia de Nuestra Señora de Candelaria': [14.2796, 122.7880],
+    'Diocesan Shrine of St. Vincent Ferrer': [14.0980, 122.8990],
+    'Gumaos Bay': [14.0980, 122.8990],
+    'Adelaida Native Farm': [14.0010, 122.9300],
+    'Pambuhan Glamping Resort': [14.1064, 123.0120],
+    'Althea\'s Dreamland Resort': [14.0010, 122.9300],
+    'Carmelita\'s Cove': [14.0506, 122.9600],
+    'Athena Nature Park & Resort': [14.0010, 122.9300]
+};
+
+function distanceInKm(lat1, lon1, lat2, lon2) {
+    const rad = degrees => degrees * Math.PI / 180;
+    const earthRadius = 6371;
+    const dLat = rad(lat2 - lat1);
+    const dLon = rad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLon / 2) ** 2;
+    return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function updateDestinationRoute(p) {
+    const distanceText = $('#modalDistance');
+    const routeText = $('#modalRouteText');
+    const mapLink = $('#modalMap');
+    if (!distanceText || !routeText || !mapLink) return;
+
+    const destination = destinationCoordinates[p.name] || [14.1128, 122.9564];
+    const destinationQuery = encodeURIComponent(`${p.name}, ${p.place}`);
+    mapLink.href = `https://www.google.com/maps/dir/?api=1&origin=My+Location&destination=${destinationQuery}&travelmode=driving`;
+    distanceText.textContent = 'Distance unavailable';
+    routeText.textContent = 'Use your location for turn-by-turn directions';
+
+    if (!navigator.geolocation) {
+        distanceText.textContent = 'Tap to get directions';
+        return;
+    }
+
+    distanceText.textContent = 'Finding your location...';
+    navigator.geolocation.getCurrentPosition(position => {
+        const userLat = position.coords.latitude;
+        const userLon = position.coords.longitude;
+        const km = distanceInKm(userLat, userLon, destination[0], destination[1]);
+        distanceText.textContent = km < 1
+            ? `About ${Math.max(1, Math.round(km * 1000))} m away`
+            : `About ${km.toFixed(km < 10 ? 1 : 0)} km away`;
+        routeText.textContent = 'Approximate straight-line distance';
+        mapLink.href = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLon}&destination=${destination[0]},${destination[1]}&travelmode=driving`;
+    }, () => {
+        distanceText.textContent = 'Tap to get directions';
+        routeText.textContent = 'Location access was not granted';
+    }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 300000 });
+}
+
 function openDetail(name) {
 let p = places.find(x => x.name === name);
 if (!p || !$('#detailModal')) return;
@@ -407,7 +668,7 @@ if ($('#modalCategory')) $('#modalCategory').textContent = p.category;
 if ($('#modalTitle')) $('#modalTitle').textContent = p.name;
 if ($('#modalPlace')) $('#modalPlace').textContent = '⌖ ' + p.place;
 if ($('#modalDescription')) $('#modalDescription').textContent = p.description;
-if ($('#modalFav')) $('#modalFav').textContent = favorites.includes(p.name) ? '♥ Saved place' : '♡ Save place';
+updateDestinationRoute(p);
 $('#detailModal').classList.add('open');
 }
 
@@ -437,10 +698,26 @@ let detail = e.target.closest('[data-detail]');
 if (detail) { openDetail(detail.dataset.detail); return; }
 let remove = e.target.closest('[data-remove-trip]');
 if (remove) {
-itinerary = itinerary.filter(n => n !== remove.dataset.removeTrip);
+itinerary = itinerary.filter(entry => entry.name !== remove.dataset.removeTrip);
 refresh();
 toast('Removed from your itinerary');
 return;
+}
+if (e.target.closest('[data-apply-generated]')) {
+    const selectedStops = $$('input[name="generatedStop"]:checked')
+        .map(input => generatedItinerary[Number(input.value)])
+        .filter(Boolean);
+    if (!selectedStops.length) {
+        toast('Select at least one place to add');
+        return;
+    }
+    let added = 0;
+    selectedStops.forEach(entry => {
+        if (addTripPlace(entry.name, entry.date, entry.notes)) added++;
+    });
+    refresh();
+    toast(added ? 'Added ' + added + ' suggested place' + (added === 1 ? '' : 's') : 'Those places are already in your plan');
+    return;
 }
 const copyButton = e.target.closest('[data-copy-phone]');
 if (copyButton) {
@@ -452,6 +729,53 @@ return;
 navigator.clipboard.writeText(number).then(() => toast('Phone number copied')).catch(() => toast('Unable to copy phone number'));
 }
 });
+document.addEventListener('input', e => {
+    const dateInput = e.target.closest('[data-trip-date]');
+    const notesInput = e.target.closest('[data-trip-notes]');
+    const field = dateInput || notesInput;
+    if (!field) return;
+    const entry = itinerary.find(item => item.name === field.dataset.tripDate || item.name === field.dataset.tripNotes);
+    if (!entry) return;
+    if (dateInput) entry.date = dateInput.value;
+    if (notesInput) entry.notes = notesInput.value;
+    save();
+    if (dateInput) updateCounts();
+    renderUpcomingPlans();
+});
+$('#tripBuilderForm')?.addEventListener('submit', e => {
+    e.preventDefault();
+    generateTripItinerary();
+});
+$('#tripBuilderResults')?.addEventListener('change', e => {
+    const selectAll = e.target.closest('#generatedSelectAll');
+    const stops = $$('input[name="generatedStop"]');
+    if (selectAll) {
+        stops.forEach(input => { input.checked = selectAll.checked; });
+        return;
+    }
+    if (!e.target.matches('input[name="generatedStop"]')) return;
+    const selectedCount = stops.filter(input => input.checked).length;
+    const master = $('#generatedSelectAll');
+    if (master) {
+        master.checked = selectedCount === stops.length;
+        master.indeterminate = selectedCount > 0 && selectedCount < stops.length;
+    }
+});
+$('#addTripDestinationForm')?.addEventListener('submit', e => {
+    e.preventDefault();
+    const select = $('#tripDestinationSelect');
+    if (!select.value) return;
+    if (addTripPlace(select.value)) {
+        refresh();
+        toast('Added to your itinerary');
+    }
+});
+const tripStartDateInput = $('#tripStartDate');
+if (tripStartDateInput) {
+    tripStartDateInput.min = localDateKey(new Date());
+    tripStartDateInput.value = localDateKey(new Date());
+}
+$$('#page-itinerary input[id^="budget"]').forEach(input => input.addEventListener('input', renderTripBudget));
 $$('.category-chip').forEach(b => b.addEventListener('click', () => {
 $$('.category-chip').forEach(x => x.classList.remove('selected'));
 b.classList.add('selected');
@@ -503,18 +827,9 @@ if ($('#closeModal')) $('#closeModal').onclick = () => $('#detailModal')?.classL
 $('#detailModal')?.addEventListener('click', e => {
 if (e.target === $('#detailModal')) $('#detailModal').classList.remove('open');
 });
-if ($('#modalFav')) {
-$('#modalFav').onclick = () => {
-if (currentPlace) {
-toggleFavorite(currentPlace.name);
-$('#modalFav').textContent = favorites.includes(currentPlace.name) ? '♥ Saved place' : '♡ Save place';
-}
-};
-}
 if ($('#modalAdd')) {
 $('#modalAdd').onclick = () => {
-if (currentPlace && !itinerary.includes(currentPlace.name)) {
-itinerary.push(currentPlace.name);
+if (currentPlace && addTripPlace(currentPlace.name)) {
 refresh();
 toast('Added to your itinerary');
 } else {
