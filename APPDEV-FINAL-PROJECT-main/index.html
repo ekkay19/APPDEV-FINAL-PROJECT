@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta char
+et="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Traventure — Explore Camarines Norte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/traventure-logo.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<section class="welcome-screen name-screen" id="nameScreen">
+    <div class="welcome-brand-panel">
+        <div class="brand-glow"></div>
+        <img src="assets/traventure-logo.png" alt="Traventure logo">
+    </div>
+    <div class="welcome-form-panel">
+        <div class="welcome-form">
+            <h1 aria-label="Hello">
+                <span aria-hidden="true">H</span>
+                <span aria-hidden="true">e</span>
+                <span aria-hidden="true">l</span>
+                <span aria-hidden="true">l</span>
+                <span aria-hidden="true">o</span>
+            </h1>
+            <p>(What do you want us to call you?)</p>
+            <label class="name-input">
+                <input id="nameEntry" type="text" maxlength="32" placeholder="Enter Your Name" autocomplete="given-name">
+            </label>
+            <button class="enter-btn" id="nameEnter">Enter</button>
+        </div>
+    </div>
+</section>
+
+<section class="welcome-screen landing-screen" id="landingScreen" hidden>
+    <div class="landing-copy">
+        <h1>Life is short and the<br>Camarines Norte is<br><em>wide</em></h1>
+        <p>To get the best of your adventure you just need to leave and<br>go where you like. We are waiting for you.</p>
+        <a href="home.html" class="get-started" id="getStarted" >Get Started</a>
+    </div>
+    <div class="landing-photo">
+        <img src="assets/bagasbas.png" alt="A beautiful beach in Camarines Norte">
+    </div>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>
+
