@@ -1311,9 +1311,10 @@
         border-top:1px solid var(--line);
         padding:19px 0 25px;
         margin-top:35px;
+        font-size:15px;
         color:#aaa5b1
     }
-
+    
     .site-footer{padding:32px 0;background-image:url('../assets/footer.jpg');background-size:cover;background-position:top;color:#fff}
     .footer-content{max-width:980px;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;align-items:center}
     .footer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin:0 auto 28px;max-width:880px}
@@ -1324,6 +1325,8 @@
     .footer-grid ul{list-style:none;padding:0;margin:0}
     .footer-grid li{margin-bottom:10px}
     .footer-bottom{border-top:1px solid rgba(255,255,255,0.06);padding-top:18px;text-align:center;color:rgba(255,255,255,0.7)}
+    .footer-icon{width:18px;height:18px;vertical-align:middle;margin-right:8px;color:rgba(255,255,255,0.9)}
+
 
     /* --- MORE --- */
     

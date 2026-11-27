@@ -147,7 +147,6 @@ function renderHome(category = homeCategory) {
     homeCategory = category;
     const query = $('#homePlaceSearch') ? $('#homePlaceSearch').value.trim().toLowerCase() : '';
     let list = places.filter(p => (category === 'All' || p.category === category) && (p.name + ' ' + p.place + ' ' + p.category).toLowerCase().includes(query));
-    if (!query) list = list.slice(0, 10);
     const count = $('#homeSearchCount');
     if (count) {
         count.textContent = query ? (list.length + ' place' + (list.length === 1 ? '' : 's') + ' found') : '';
