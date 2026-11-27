@@ -19,6 +19,10 @@
             <a href="map.html" class="nav-link" data-page="map">Map</a>
             <a href="hotlines.html" class="nav-link" data-page="hotlines">Hotlines</a>
             <button class="nav-link" id="moreTrigger" data-page="more" aria-haspopup="dialog" aria-expanded="false">More</button>
+            <a class="notification-icon-button" href="notifications.html" aria-label="View notifications" title="Notifications">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
+                <span class="notification-count" aria-live="polite" hidden></span>
+            </a>
             <a href="profile.html" class="nav-link" aria-label="Visit Profile" title="User Profile">
                 <img src="assets/avatar_profile.png" alt="User profile">
             </a>
@@ -32,6 +36,38 @@
             <h1>Your travel <em>itinerary.</em></h1>
             <p>Bring your chosen destinations together in one simple trip plan.</p>
         </div>
+        <section class="trip-builder-card" aria-labelledby="tripBuilderTitle">
+            <div class="trip-feature-heading">
+                <div>
+                    <div class="eyebrow muted">PERSONALIZED PLANNING</div>
+                    <h2 id="tripBuilderTitle">Build a custom itinerary</h2>
+                    <p>Choose your travel dates and interests, then pick which suggested places to add. All places are selected by default.</p>
+                </div>
+                <span class="trip-feature-icon" aria-hidden="true">✦</span>
+            </div>
+            <form id="tripBuilderForm" class="trip-builder-form">
+                <label>Start date
+                    <input id="tripStartDate" type="date" required>
+                </label>
+                <label>Days
+                    <input id="tripDays" type="number" min="1" max="14" value="2" required>
+                </label>
+                <fieldset class="trip-interest-options">
+                    <legend>What are you interested in?</legend>
+                    <label><input type="checkbox" name="tripInterest" value="Beaches" checked> Beaches</label>
+                    <label><input type="checkbox" name="tripInterest" value="Tourist Attractions"> Culture</label>
+                    <label><input type="checkbox" name="tripInterest" value="Waterfalls"> Waterfalls</label>
+                    <label><input type="checkbox" name="tripInterest" value="Mountains"> Mountains</label>
+                    <label><input type="checkbox" name="tripInterest" value="Rivers"> Rivers</label>
+                    <label><input type="checkbox" name="tripInterest" value="Resorts & Campsites"> Stays</label>
+                    <label><input type="checkbox" name="tripInterest" value="Churches"> Churches</label>
+                </fieldset>
+                <button class="primary-btn" type="submit">Generate my itinerary</button>
+            </form>
+            <div id="tripBuilderResults" class="trip-builder-results" aria-live="polite" hidden></div>
+            <p class="trip-builder-note">Suggestions are generated in your browser from destination categories; check local hours, fees, transport, and weather before traveling.</p>
+        </section>
+
         <div class="itinerary-layout">
             <div class="itinerary-main">
                 <div class="itinerary-top">
@@ -39,21 +75,63 @@
                         <h2>My trip plan</h2>
                         <p id="tripCount">No destinations added yet</p>
                     </div>
-                    <button class="outline-btn" data-page="explore"><a href="home.html">＋ Add places</a></button>
+                    <a class="outline-btn" href="home.html">＋ Browse places</a>
                 </div>
+                <form id="addTripDestinationForm" class="add-trip-destination">
+                    <label for="tripDestinationSelect">Add a destination</label>
+                    <select id="tripDestinationSelect" required>
+                        <option value="">Choose a place</option>
+                    </select>
+                    <button class="outline-btn" type="submit">Add destination</button>
+                </form>
                 <div id="tripList" class="trip-list"></div>
                 <div id="tripEmpty" class="empty-state"><span>▤</span>
                     <h3>Your trip starts here</h3>
                     <p>Browse destinations and add the places you want to visit.</p>
-                    <button class="primary-btn" data-page="explore"><a href="home.html">Find destinations ↗</a> </button>
+                    <a class="primary-btn" href="home.html">Find destinations ↗</a>
                 </div>
             </div>
             <aside class="trip-tip">
                 <span>✦</span>
-                <h3>A little planning goes a long way.</h3>
-                <p>Save places first, then arrange your route based on the towns you want to explore.</p>
+                <h3>Trip prep recommendations</h3>
+                <p>Helpful gear suggestions based on the places in your itinerary.</p>
+                <div id="tripPrepList" class="trip-prep-list"></div>
             </aside>
         </div>
+
+        <section class="trip-budget-card" aria-labelledby="tripBudgetTitle">
+            <div class="trip-feature-heading">
+                <div>
+                    <div class="eyebrow muted">PLAN YOUR SPENDING</div>
+                    <h2 id="tripBudgetTitle">Trip budget calculator</h2>
+                    <p>Enter your own prices for a quick group-trip estimate in Philippine pesos.</p>
+                </div>
+                <span class="trip-feature-icon" aria-hidden="true">₱</span>
+            </div>
+            <div class="trip-budget-fields">
+                <label>Travelers
+                    <input id="budgetTravelers" type="number" min="1" max="50" value="1">
+                </label>
+                <label>Trip nights
+                    <input id="budgetNights" type="number" min="0" max="60" value="1">
+                </label>
+                <label>Round-trip transport per traveler (₱)
+                    <input id="budgetTransport" type="number" min="0" step="100" value="0">
+                </label>
+                <label>Lodging per night (₱)
+                    <input id="budgetLodging" type="number" min="0" step="100" value="0">
+                </label>
+                <label>Meals per traveler per day (₱)
+                    <input id="budgetMeals" type="number" min="0" step="50" value="0">
+                </label>
+                <label>Activities per traveler (₱)
+                    <input id="budgetActivities" type="number" min="0" step="50" value="0">
+                </label>
+            </div>
+            <div id="tripBudgetResult" class="trip-budget-result" aria-live="polite"></div>
+            <p class="trip-builder-note">This is a user-entered estimate, not live pricing. Actual fares, entrance fees, and accommodation costs may vary.</p>
+        </section>
+
     </section>
 </main>
 <footer>© 2026 Traventure</footer>
