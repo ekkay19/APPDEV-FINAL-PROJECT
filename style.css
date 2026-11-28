@@ -3790,7 +3790,11 @@ body.more-open{
 }
 
 .trip-budget-card{
-    margin-top:28px
+    margin-top:28px;
+    padding:22px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:14px
 }
 
 .trip-feature-heading{
@@ -3818,8 +3822,8 @@ body.more-open{
     display:grid;
     place-items:center;
     flex:none;
-    width:42px;
-    height:42px;
+    width:52px;
+    height:52px;
     border-radius:13px;
     background:#f2edf8;
     color:#8053b8;
