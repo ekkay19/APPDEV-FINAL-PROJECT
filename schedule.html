@@ -37,38 +37,6 @@
             <h1>Your travel <em>itinerary.</em></h1>
             <p>Bring your chosen destinations together in one simple trip plan.</p>
         </div>
-        <section class="trip-builder-card" aria-labelledby="tripBuilderTitle">
-            <div class="trip-feature-heading">
-                <div>
-                    <div class="eyebrow muted">PERSONALIZED PLANNING</div>
-                    <h2 id="tripBuilderTitle">Build a custom itinerary</h2>
-                    <p>Choose your travel dates and interests, then pick which suggested places to add. All places are selected by default.</p>
-                </div>
-                <span class="trip-feature-icon" aria-hidden="true">✦</span>
-            </div>
-            <form id="tripBuilderForm" class="trip-builder-form">
-                <label>Start date
-                    <input id="tripStartDate" type="date" required>
-                </label>
-                <label>Days
-                    <input id="tripDays" type="number" min="1" max="14" value="2" required>
-                </label>
-                <fieldset class="trip-interest-options">
-                    <legend>What are you interested in?</legend>
-                    <label><input type="checkbox" name="tripInterest" value="Beaches" checked> Beaches</label>
-                    <label><input type="checkbox" name="tripInterest" value="Tourist Attractions"> Culture</label>
-                    <label><input type="checkbox" name="tripInterest" value="Waterfalls"> Waterfalls</label>
-                    <label><input type="checkbox" name="tripInterest" value="Mountains"> Mountains</label>
-                    <label><input type="checkbox" name="tripInterest" value="Rivers"> Rivers</label>
-                    <label><input type="checkbox" name="tripInterest" value="Resorts & Campsites"> Stays</label>
-                    <label><input type="checkbox" name="tripInterest" value="Churches"> Churches</label>
-                </fieldset>
-                <button class="primary-btn" type="submit">Generate my itinerary</button>
-            </form>
-            <div id="tripBuilderResults" class="trip-builder-results" aria-live="polite" hidden></div>
-            <p class="trip-builder-note">Suggestions are generated in your browser from destination categories; check local hours, fees, transport, and weather before traveling.</p>
-        </section>
-
         <div class="itinerary-layout">
             <div class="itinerary-main">
                 <div class="itinerary-top">
