@@ -11,29 +11,65 @@
 <body>
 
 <main class="main">
+    <header class="topbar">
+        <a class="top-brand" href="home.html"><img src="assets/traventure-logo.png" alt=""><strong>Traventure</strong></a>
+        <nav class="top-nav" aria-label="Main navigation">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="schedule.html" class="nav-link">Schedule</a>
+            <a href="map.html" class="nav-link">Map</a>
+            <a href="hotlines.html" class="nav-link">Hotlines</a>
+            <button class="nav-link" id="moreTrigger" data-page="more" aria-haspopup="dialog" aria-expanded="false">More</button>
+            <a class="notification-icon-button" href="notifications.html" aria-label="View notifications" title="Notifications">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
+                <span class="notification-count" aria-live="polite" hidden></span>
+            </a>
+            <a href="profile.html" class="nav-link" aria-label="Visit Profile" title="User Profile">
+                <img src="assets/avatar_profile.png" alt="User profile">
+            </a>
+        </nav>
+    </header>
+    <section class="page active">
+        <div class="page-intro">
+            <div class="eyebrow muted">YOUR TRAVEL SPACE</div>
+            <h1>More to <em>explore.</em></h1>
+            <p>Keep your favorite places, memories, and achievements close at hand.</p>
+        </div>
+        <a class="more-item" href="favplaces.html">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h12v17l-6-4-6 4z"></path></svg>
+            <span>Favorite places</span>
+        </a>
+        <a class="more-item" href="memories.html">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5h14v17H5z"></path><path d="M9 8h6M9 12h8M9 16h8"></path></svg>
+            <span>Memories</span>
+        </a>
+        <a class="more-item" href="achievements.html">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h10v5a5 5 0 0 1-10 0zM7 6H4v2a4 4 0 0 0 4 4m9-6h3v2a4 4 0 0 1-4 4M12 13.5v4m-4 3h8m-6-3h4"></path></svg>
+            <span>Achievements &amp; Rewards</span>
+        </a>
+    </section>
     <div class="more-backdrop" id="moreModal" hidden>
         <section class="more-panel" role="dialog" aria-modal="true" aria-labelledby="moreTitle">
             <img class="more-decoration" src="assets/pinwheel.gif" alt="" aria-hidden="true">
             <h2 id="moreTitle">More...</h2>
-            <button class="more-item" data-page="favorites">
+            <a class="more-item" href="favplaces.html">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M6 3.5h12v17l-6-4-6 4z"></path>
                 </svg>
                 <span>Favorite places</span>
-            </button>
-            <button class="more-item" data-page="memories">
+            </a>
+            <a class="more-item" href="memories.html">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M5 3.5h14v17H5z"></path>
                     <path d="M9 8h6M9 12h8M9 16h8"></path>
                 </svg>
                 <span>Memories</span>
-            </button>
-            <button class="more-item" data-page="achievements">
+            </a>
+            <a class="more-item" href="achievements.html">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M7 3.5h10v5a5 5 0 0 1-10 0zM7 6H4v2a4 4 0 0 0 4 4m9-6h3v2a4 4 0 0 1-4 4M12 13.5v4m-4 3h8m-6-3h4"></path>
                 </svg>
                 <span>Achievements &amp; Rewards</span>
-            </button>
+            </a>
             <div class="more-themes">
                 <div class="more-item theme-heading">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -55,6 +91,7 @@
     </div>
 </main>
 
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script src="app.js"></script>
     
 </body>
