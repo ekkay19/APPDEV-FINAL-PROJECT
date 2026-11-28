@@ -1,8 +1,4 @@
 
-
-
-
-
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 function updateAvatar() {
     const savedAvatar = localStorage.getItem('tv-avatar');
@@ -652,7 +648,7 @@ if (remove) {
 itinerary = itinerary.filter(entry => entry.name !== remove.dataset.removeTrip);
 refresh();
 toast('Removed from your itinerary');
-    return;
+return;
 }
 const copyButton = e.target.closest('[data-copy-phone]');
 if (copyButton) {
@@ -903,6 +899,211 @@ renderAll();
 });
 }
 
+function installTravelAssistant() {
+    if (!$('.main') || $('#travelAssistant')) return;
+
+    const root = document.createElement('aside');
+    root.id = 'travelAssistant';
+    root.className = 'travel-assistant';
+    root.innerHTML = `
+        <section class="assistant-panel" id="assistantPanel" role="dialog" aria-label="Traventure travel assistant" hidden>
+            <header class="assistant-header">
+                <span class="assistant-avatar" aria-hidden="true">✦</span>
+                <div><strong>Traventure Assistant</strong><small>Local trip helper · Available anytime</small></div>
+                <button class="assistant-close" type="button" aria-label="Close travel assistant">×</button>
+            </header>
+            <div class="assistant-messages" id="assistantMessages" role="log" aria-live="polite" aria-relevant="additions"></div>
+            <div class="assistant-prompts" aria-label="Suggested questions">
+                <button type="button" data-assistant-prompt="Recommend a beach">Beaches</button>
+                <button type="button" data-assistant-prompt="Plan a 2 day trip for nature">Plan a trip</button>
+                <button type="button" data-assistant-prompt="Help me estimate my trip budget">Trip budget</button>
+            </div>
+            <form class="assistant-form" id="assistantForm">
+                <label class="sr-only" for="assistantInput">Ask the travel assistant</label>
+                <input id="assistantInput" type="text" maxlength="300" placeholder="Ask about places or trip ideas..." autocomplete="off" required>
+                <button type="submit" aria-label="Send message">↑</button>
+            </form>
+            <p class="assistant-disclaimer">Automated suggestions from Traventure’s destination list. No live AI, booking, or vendor pricing is connected.</p>
+        </section>
+        <button class="assistant-launcher" type="button" aria-controls="assistantPanel" aria-expanded="false">
+            <span aria-hidden="true">✦</span><span>Ask Traventure</span>
+        </button>`;
+    document.body.append(root);
+
+    const panel = $('#assistantPanel'), launcher = $('.assistant-launcher', root),
+        messages = $('#assistantMessages'), input = $('#assistantInput');
+
+    function addMessage(text, sender) {
+        const message = document.createElement('p');
+        message.className = 'assistant-message ' + sender;
+        message.textContent = text;
+        messages.append(message);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    function showPlaces(list, days) {
+        const listElement = document.createElement('div');
+        listElement.className = 'assistant-place-list';
+        list.forEach((place, index) => {
+            const card = document.createElement('article');
+            card.className = 'assistant-place';
+            const title = document.createElement('strong');
+            title.textContent = place.name;
+            const details = document.createElement('small');
+            details.textContent = place.category + ' · ' + place.place;
+            const description = document.createElement('p');
+            description.textContent = place.description;
+            const addButton = document.createElement('button');
+            addButton.type = 'button';
+            addButton.className = 'assistant-add-place';
+            addButton.textContent = 'Add to my itinerary';
+            addButton.addEventListener('click', () => {
+                if (!addTripPlace(place.name)) {
+                    addMessage(place.name + ' is already in your itinerary.', 'assistant');
+                    return;
+                }
+                refresh();
+                addMessage('Added ' + place.name + ' to your itinerary.', 'assistant');
+                toast('Added to your itinerary');
+            });
+            card.append(title, details, description, addButton);
+            if (days) {
+                const day = document.createElement('span');
+                day.className = 'assistant-day';
+                day.textContent = 'Day ' + (Math.floor(index / 2) + 1);
+                card.prepend(day);
+            }
+            listElement.append(card);
+        });
+        messages.append(listElement);
+
+        if (days) {
+            const addAll = document.createElement('button');
+            addAll.type = 'button';
+            addAll.className = 'assistant-add-plan';
+            addAll.textContent = 'Add all ' + list.length + ' stops to my itinerary';
+            addAll.addEventListener('click', () => {
+                const start = new Date();
+                start.setHours(12, 0, 0, 0);
+                let added = 0;
+                list.forEach((place, index) => {
+                    const date = new Date(start);
+                    date.setDate(date.getDate() + Math.floor(index / 2));
+                    if (addTripPlace(place.name, localDateKey(date), 'Suggested by Traventure Assistant. Confirm local hours, fees, and travel conditions.')) added++;
+                });
+                refresh();
+                addMessage(added ? 'Added ' + added + ' suggested stop' + (added === 1 ? '' : 's') + ' to your itinerary.' : 'Those places are already in your itinerary.', 'assistant');
+                if (added) toast('Added ' + added + ' suggested stops');
+            });
+            messages.append(addAll);
+        }
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    function getCategories(query) {
+        const categories = [
+            { category: 'Beaches', words: ['beach', 'beaches', 'island', 'islands', 'surf', 'dagat', 'coast', 'coastal', 'nature', 'outdoor', 'outdoors'] },
+            { category: 'Waterfalls', words: ['waterfall', 'waterfalls', 'falls', 'talon', 'nature', 'outdoor', 'outdoors'] },
+            { category: 'Rivers', words: ['river', 'rivers', 'ilog', 'nature', 'outdoor', 'outdoors'] },
+            { category: 'Mountains', words: ['mountain', 'mountains', 'hike', 'hiking', 'trek', 'bundok', 'nature', 'outdoor', 'outdoors'] },
+            { category: 'Churches', words: ['church', 'churches', 'history', 'historic', 'heritage', 'culture'] },
+            { category: 'Resorts & Campsites', words: ['resort', 'resorts', 'stay', 'camp', 'campsite', 'nature', 'outdoor', 'outdoors'] },
+            { category: 'Tourist Attractions', words: ['attraction', 'attractions', 'landmark', 'sightseeing'] }
+        ];
+        return categories.filter(item => item.words.some(word => query.includes(word))).map(item => item.category);
+    }
+
+    function replyTo(query) {
+        const normalized = query.toLowerCase();
+        if (/budget|price|pricing|cost|expensive|cheap|afford|estimate/.test(normalized)) {
+            addMessage('I can help you estimate a trip budget. Open the calculator to enter your group size, nights, and quoted transport, lodging, meals, and activity costs; the total updates as you edit them. These are your inputs, not live prices, so please confirm current rates with local providers.', 'assistant');
+            const link = document.createElement('a');
+            link.className = 'assistant-link';
+            link.href = 'schedule.html#tripBudgetTitle';
+            link.textContent = 'Open trip budget calculator ↗';
+            messages.append(link);
+            messages.scrollTop = messages.scrollHeight;
+            return;
+        }
+        if (!places.length) {
+            addMessage('Destination recommendations are available from the Traventure home page. Open it to browse the local destination catalog and draft a trip.', 'assistant');
+            const link = document.createElement('a');
+            link.className = 'assistant-link';
+            link.href = 'home.html';
+            link.textContent = 'Browse destinations ↗';
+            messages.append(link);
+            messages.scrollTop = messages.scrollHeight;
+            return;
+        }
+
+        const dayMatch = normalized.match(/(\d{1,2})\s*(?:day|days|araw)/);
+        const isPlanRequest = /plan|itinerary|build|schedule|trip|day trip/.test(normalized);
+        const days = dayMatch ? Math.min(7, Math.max(1, Number(dayMatch[1]))) : 1;
+        const categories = getCategories(normalized);
+        const exactMatches = places.filter(place => (place.name + ' ' + place.place).toLowerCase().includes(normalized.trim()));
+        const limit = isPlanRequest ? Math.min(days * 2, 10) : 3;
+        const categoryGroups = categories.map(category => places.filter(place =>
+            place.category === category && !itinerary.some(entry => entry.name === place.name)
+        ));
+        const balancedPlaces = [];
+        while (categoryGroups.some(group => group.length) && balancedPlaces.length < limit) {
+            categoryGroups.forEach(group => {
+                if (group.length && balancedPlaces.length < limit) balancedPlaces.push(group.shift());
+            });
+        }
+        const available = exactMatches.length
+            ? exactMatches.filter(place => !itinerary.some(entry => entry.name === place.name))
+            : categories.length ? balancedPlaces : places.filter(place => !itinerary.some(entry => entry.name === place.name));
+        const suggestions = available.slice(0, limit);
+
+        if (!suggestions.length) {
+            addMessage('I could not find a matching place, or you already have those suggestions in your itinerary. Try asking for beaches, waterfalls, mountains, rivers, churches, resorts, or culture in Camarines Norte.', 'assistant');
+            return;
+        }
+        if (isPlanRequest) {
+            addMessage('Here is a ' + days + '-day draft based on the destinations and interests in Traventure. Stops are suggestions; check routes, opening times, weather, and fees before you go.', 'assistant');
+            showPlaces(suggestions, days);
+        } else {
+            addMessage(categories.length ? 'Here are a few ' + categories.join(' and ').toLowerCase() + ' ideas in Camarines Norte:' : 'Here are a few places to explore in Camarines Norte:', 'assistant');
+            showPlaces(suggestions);
+        }
+    }
+
+    function submitPrompt(value) {
+        const query = value.trim();
+        if (!query) return;
+        addMessage(query, 'traveler');
+        replyTo(query);
+        input.value = '';
+        input.focus();
+    }
+
+    launcher.addEventListener('click', () => {
+        const willOpen = panel.hidden;
+        panel.hidden = !willOpen;
+        launcher.setAttribute('aria-expanded', String(willOpen));
+        if (willOpen) input.focus();
+    });
+    $('.assistant-close', root).addEventListener('click', () => {
+        panel.hidden = true;
+        launcher.setAttribute('aria-expanded', 'false');
+        launcher.focus();
+    });
+    $('#assistantForm', root).addEventListener('submit', event => {
+        event.preventDefault();
+        submitPrompt(input.value);
+    });
+    $$('.assistant-prompts button', root).forEach(button => button.addEventListener('click', () => submitPrompt(button.dataset.assistantPrompt)));
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !panel.hidden) {
+            panel.hidden = true;
+            launcher.setAttribute('aria-expanded', 'false');
+            launcher.focus();
+        }
+    });
+    addMessage('Hi! Tell me what you enjoy or how many days you have, and I can suggest local places or draft a trip plan. Ask me about budgeting too.', 'assistant');
+}
+
 // 5. INITIALIZE CURRENT PAGE
 
 renderMemoryCalendar();
@@ -911,3 +1112,4 @@ renderMap();
 renderHotlines();
 refresh();
 updateCounts();
+installTravelAssistant();
