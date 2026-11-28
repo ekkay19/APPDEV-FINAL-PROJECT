@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Traventure — Notifications</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/traventure-logo.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="main">
+    <header class="topbar">
+        <a class="top-brand" href="home.html"><img src="assets/traventure-logo.png" alt=""><strong>Traventure</strong></a>
+        <nav class="top-nav" aria-label="Main navigation">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="schedule.html" class="nav-link">Schedule</a>
+            <a href="map.html" class="nav-link">Map</a>
+            <a href="hotlines.html" class="nav-link">Hotlines</a>
+            <button class="nav-link" id="moreTrigger" data-page="more" aria-haspopup="dialog" aria-expanded="false">More</button>
+            <a class="notification-icon-button" href="notifications.html" aria-label="View notifications" title="Notifications" aria-current="page">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
+                <span class="notification-count" aria-live="polite" hidden></span>
+            </a>
+            <a href="profile.html" class="nav-link" aria-label="Visit Profile" title="User Profile"><img src="assets/avatar_profile.png" alt=""></a>
+        </nav>
+    </header>
+    <section id="page-notifications" class="page active">
+        <div class="page-intro">
+            <div class="eyebrow muted">YOUR TRAVEL REMINDERS</div>
+            <h1>Upcoming <em>plans.</em></h1>
+            <p>Keep track of the destinations and notes you have scheduled.</p>
+        </div>
+        <div id="upcomingPlans" class="upcoming-plans" aria-live="polite"></div>
+        <div id="upcomingPlansEmpty" class="empty-state upcoming-empty" hidden>
+            <span>♧</span>
+            <h3>No upcoming plans yet</h3>
+            <p>Add destinations to your schedule and give them a future date to see them here.</p>
+            <a class="primary-btn" href="schedule.html">Plan a trip ↗</a>
+        </div>
+    </section>
+</main>
+<footer>© 2026 Traventure</footer>
+<div class="more-backdrop" id="moreModal" hidden>
+    <section class="more-panel" role="dialog" aria-modal="true" aria-labelledby="moreTitle">
+        <img class="more-decoration" src="assets/pinwheel.gif" alt="" aria-hidden="true">
+        <h2 id="moreTitle">More...</h2>
+        <a class="more-item" href="favplaces.html">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h12v17l-6-4-6 4z"></path></svg>
+            <span>Favorite places</span>
+        </a>
+        <a class="more-item" href="memories.html">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5h14v17H5z"></path><path d="M9 8h6M9 12h8M9 16h8"></path></svg>
+            <span>Memories</span>
+        </a>
+        <a class="more-item" href="achievements.html">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h10v5a5 5 0 0 1-10 0zM7 6H4v2a4 4 0 0 0 4 4m9-6h3v2a4 4 0 0 1-4 4M12 13.5v4m-4 3h8m-6-3h4"></path></svg>
+            <span>Achievements &amp; Rewards</span>
+        </a>
+        <div class="more-themes">
+            <div class="more-item theme-heading">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 0 0 17h1.2a2 2 0 0 0 1.5-3.3 1.5 1.5 0 0 1 1.2-2.5H18a2.5 2.5 0 0 0 2.5-2.5A8.5 8.5 0 0 0 12 3.5z"></path><path d="M7.5 10h.1m3-3h.1m4 1h.1m-8 7h.1"></path></svg>
+                <span>Themes</span>
+            </div>
+            <div class="theme-options" role="group" aria-label="Choose a theme">
+                <button class="theme-choice" type="button" data-theme-choice="blue" aria-pressed="false"><span class="theme-swatch blue-swatch"></span>Blue</button>
+                <button class="theme-choice" type="button" data-theme-choice="violet" aria-pressed="false"><span class="theme-swatch violet-swatch"></span>Violet</button>
+                <button class="theme-choice" type="button" data-theme-choice="black" aria-pressed="false"><span class="theme-swatch black-swatch"></span>Black</button>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="destinations.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
