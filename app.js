@@ -28,7 +28,6 @@ itinerary = itinerary.map(entry => typeof entry === 'string' ? { name: entry, da
 let memories = JSON.parse(localStorage.getItem('tv-memories') || '[]');
 let traveler = localStorage.getItem('tv-name') || 'Traveler', currentPlace = null, currentPage = 'home', homeCategory = 'All';
 let memoryDate = new Date(), memoryPhoto = '';
-let generatedItinerary = [];
 let readNotificationKeys = JSON.parse(localStorage.getItem('tv-notifications-read') || '[]');
 if (!Array.isArray(readNotificationKeys)) readNotificationKeys = [];
 readNotificationKeys = readNotificationKeys.filter(key => typeof key === 'string');
@@ -296,53 +295,6 @@ function addTripPlace(name, date = '', notes = '') {
     if (itinerary.some(entry => entry.name === name)) return false;
     itinerary.push({ name, date, notes });
     return true;
-}
-
-function generateTripItinerary() {
-    const startDate = $('#tripStartDate').value;
-    const days = Number($('#tripDays').value);
-    const interests = $$('input[name="tripInterest"]:checked').map(input => input.value);
-    if (!startDate || !days || !interests.length) {
-        toast('Choose a start date, trip length, and at least one interest');
-        return;
-    }
-
-    const options = interests.map(category => ({
-        category,
-        places: places.filter(place => place.category === category && !itinerary.some(entry => entry.name === place.name))
-            .sort((a, b) => a.place.localeCompare(b.place))
-    }));
-    const selected = [];
-    while (selected.length < Math.min(days * 2, 20) && options.some(option => option.places.length)) {
-        options.forEach(option => {
-            if (selected.length < Math.min(days * 2, 20) && option.places.length) {
-                selected.push(option.places.shift());
-            }
-        });
-    }
-    generatedItinerary = selected.map((place, index) => {
-        const date = new Date(startDate + 'T12:00:00');
-        date.setDate(date.getDate() + Math.floor(index / 2));
-        return {
-            name: place.name,
-            date: localDateKey(date),
-            notes: 'Suggested place based on your interest in ' + place.category.toLowerCase() + '. Confirm local hours, fees, and travel conditions.'
-        };
-    });
-
-    const results = $('#tripBuilderResults');
-    if (!generatedItinerary.length) {
-        results.innerHTML = '<p>All matching destinations are already in your trip plan. Try another interest.</p>';
-        results.hidden = false;
-        return;
-    }
-    results.innerHTML = '<h3>Your suggested route</h3><label class="generated-select-all"><input id="generatedSelectAll" type="checkbox" checked> Select all ' +
-        generatedItinerary.length + ' places</label><ol>' + generatedItinerary.map((entry, index) =>
-        '<li><label class="generated-route-stop"><input type="checkbox" name="generatedStop" value="' + index + '" checked><span>' +
-        '<span>Day ' + (Math.floor(index / 2) + 1) + ' · ' + safe(formatTripDate(entry.date)) + '</span><strong>' +
-        safe(entry.name) + '</strong></span></label></li>'
-    ).join('') + '</ol><button type="button" class="primary-btn" data-apply-generated>Add selected places to my plan</button>';
-    results.hidden = false;
 }
 
 function memoryDateKey(date) {
@@ -700,22 +652,6 @@ if (remove) {
 itinerary = itinerary.filter(entry => entry.name !== remove.dataset.removeTrip);
 refresh();
 toast('Removed from your itinerary');
-return;
-}
-if (e.target.closest('[data-apply-generated]')) {
-    const selectedStops = $$('input[name="generatedStop"]:checked')
-        .map(input => generatedItinerary[Number(input.value)])
-        .filter(Boolean);
-    if (!selectedStops.length) {
-        toast('Select at least one place to add');
-        return;
-    }
-    let added = 0;
-    selectedStops.forEach(entry => {
-        if (addTripPlace(entry.name, entry.date, entry.notes)) added++;
-    });
-    refresh();
-    toast(added ? 'Added ' + added + ' suggested place' + (added === 1 ? '' : 's') : 'Those places are already in your plan');
     return;
 }
 const copyButton = e.target.closest('[data-copy-phone]');
@@ -741,25 +677,6 @@ document.addEventListener('input', e => {
     if (dateInput) updateCounts();
     renderUpcomingPlans();
 });
-$('#tripBuilderForm')?.addEventListener('submit', e => {
-    e.preventDefault();
-    generateTripItinerary();
-});
-$('#tripBuilderResults')?.addEventListener('change', e => {
-    const selectAll = e.target.closest('#generatedSelectAll');
-    const stops = $$('input[name="generatedStop"]');
-    if (selectAll) {
-        stops.forEach(input => { input.checked = selectAll.checked; });
-        return;
-    }
-    if (!e.target.matches('input[name="generatedStop"]')) return;
-    const selectedCount = stops.filter(input => input.checked).length;
-    const master = $('#generatedSelectAll');
-    if (master) {
-        master.checked = selectedCount === stops.length;
-        master.indeterminate = selectedCount > 0 && selectedCount < stops.length;
-    }
-});
 $('#addTripDestinationForm')?.addEventListener('submit', e => {
     e.preventDefault();
     const select = $('#tripDestinationSelect');
@@ -769,11 +686,6 @@ $('#addTripDestinationForm')?.addEventListener('submit', e => {
         toast('Added to your itinerary');
     }
 });
-const tripStartDateInput = $('#tripStartDate');
-if (tripStartDateInput) {
-    tripStartDateInput.min = localDateKey(new Date());
-    tripStartDateInput.value = localDateKey(new Date());
-}
 $$('#page-itinerary input[id^="budget"]').forEach(input => input.addEventListener('input', renderTripBudget));
 $$('.category-chip').forEach(b => b.addEventListener('click', () => {
 $$('.category-chip').forEach(x => x.classList.remove('selected'));
